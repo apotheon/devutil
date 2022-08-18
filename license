@@ -1,0 +1,51 @@
+#!/bin/sh
+
+lice_coil=coil
+lice_dpl=dpl
+lice_isc=isc
+lice_mit=mit
+lice_npl=nietzschepl
+lice_owl=owl
+lice_2bsd=2bsd
+lice_un=un
+
+if [ "$1" = '-h' ] || [ "$1" = '--help' ] || [ "$1" = '-help' ]; then
+  echo
+  echo 'USAGE: license [ -h | -help | --help | LICENSE ]'
+  echo
+  echo '  This command downloads license text and prints it to STDOUT, so you'
+  echo '  may pipe it to other commands including xsel for pasting with a'
+  echo '  middle click, or redirect it to a file such as LICENSE.  With no'
+  echo '  arguments, it uses the COIL.  Specify a license from the supported'
+  echo '  list to use a different license instead.'
+  echo
+  echo 'OPTIONS:'
+  echo
+  echo '  -h | -help | --help     Only print this help output and exit.'
+  echo
+  echo 'LICENSES:'
+  echo
+  echo '  2bsd      Simplified BSD License (BSD2)'
+  echo '  coil      Copyfree Open Innovation License (COIL): the default'
+  echo '  dpl       Detachable Public License (DPL)'
+  echo '  isc       ISC License (ISC)'
+  echo '  mit       MIT License (MIT)'
+  echo '  npl       Nietzsche Public License (NietzschePL)'
+  echo '  owl       Open Works License (OWL)'
+  echo '  un        Unlicense'
+  echo
+  echo
+else
+  url_base='http://copyfree.org/content/standard/licenses'
+  license='coil'
+
+  if [ "$1" = dpl ]; then
+    license=detachable
+  elif [ "$1" = npl ]; then
+    license=nietzschepl
+  elif [ $1 ]; then
+    license="$1"
+  fi
+
+  curl "$url_base/$license/license.txt"
+fi
