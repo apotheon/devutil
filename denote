@@ -1,0 +1,57 @@
+#!/bin/sh
+
+if [ $1 ]; then
+  cmd=$1
+  shift 1
+
+  if [ $1 ]; then
+    srcfile=$1
+    shift 1
+  fi
+fi
+
+files_output="scribble $srcfile --output-mode files"
+
+if [ "$cmd" = '-h' ] || [ "$cmd" = '--help' ] || [ "$cmd" = '-help' ]; then
+  echo
+  echo 'USAGE: denote -h | -help | --help'
+  echo '              arm | disarm <FILENAME>'
+  echo
+  echo '  This is currently a front end for scribble, the command line tool'
+  echo '  for interacting with Scribble-annotated Solidity contracts.'
+  echo
+  echo 'COMMANDS:'
+  echo
+  echo 'arm <FILENAME>    Create a backup of a given file, then apply Scribble'
+  echo '                  instrumentation to the original file.'
+  echo
+  echo 'disarm <FILENAME> Reverse changes made by the arm command.'
+  echo
+  echo 'hand <FILENAME>   Make changes as with the arm command but apply the'
+  echo '                  instrumentation such that tests emit events rather'
+  echo '                  than explicit assert(failure).  Use --show-events'
+  echo '                  to display assertion events, not fail tests.'
+  echo
+  echo 'OPTIONS:'
+  echo
+  echo '  -h | -help | --help     Only print this help output and exit.'
+  echo
+  echo
+elif [ "$cmd" = "arm" ] || [ "$cmd" = "disarm" ] || [ "$cmd" = "hand" ]; then
+  if [ $srcfile ]; then
+    if [ "$cmd" = "hand" ]; then
+      cmd='arm --no-assert'
+    fi
+
+    $files_output --$cmd $@
+  else
+    echo "$cmd command missing file argument; see 'denote -h' for help"
+  fi
+else
+  echo
+  echo 'Try one of these options:'
+  echo '  denote -h'
+  echo '  denote arm <FILENAME>'
+  echo '  denote disarm <FILENAME>'
+  echo
+fi
